@@ -15,7 +15,7 @@ namespace ResonitePackageExporter
         public static async Task BuildPackage(Engine engine, CloudX.Shared.Record record, SavedGraph savedGraph, System.IO.Stream writeStream, bool includeVariants)
         {
             RecordPackage package = RecordPackage.Create(writeStream);
-            record.NeosDBManifest = new List<NeosDBAsset>();
+            record.NeosDBManifest = [];
             await CollectAssets(engine, record, savedGraph, package, includeVariants).ConfigureAwait(false);
 
             /// THIS MIGHT NEED TO BE ADDRESSED
@@ -93,7 +93,7 @@ namespace ResonitePackageExporter
                                 if (metadata != null)
                                 {
                                     metadata.AssetIdentifier = assetSignature;
-                                    await package.WriteMetadata(metadata);
+                                    package.WriteMetadata(metadata);
                                 }
                                 if (includeVariants)
                                 {

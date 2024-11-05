@@ -1,105 +1,107 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <AppName>NeosVR</AppName>
-    <AppNameShort>Neos</AppNameShort>
+	<PropertyGroup>
+		<AppName>NeosVR</AppName>
+		<AppNameShort>Neos</AppNameShort>
 
-    <Product>ResonitePackageExporter</Product>
-    <Version>0.1.0</Version>
+		<Product>ResonitePackageExporter</Product>
+		<Version>0.1.0</Version>
 
-    <Company>New_Project_Final_Final_WIP</Company>
-    <Copyright>Copyright © $(Company) 2024</Copyright>
+		<Company>New_Project_Final_Final_WIP</Company>
+		<Copyright>Copyright © $(Company) 2024</Copyright>
 
-    <Authors>$(Company)</Authors>
-    <AssemblyTitle>$(Product)</AssemblyTitle>
-    <AssemblyName>$(Product)</AssemblyName>
+		<Authors>$(Company)</Authors>
+		<AssemblyTitle>$(Product)</AssemblyTitle>
+		<AssemblyName>$(Product)</AssemblyName>
 
-    <RootNamespace>ResonitePackageExporter</RootNamespace>
-    <ProjectGuid>{E5F0F18C-50AE-4491-AE4B-70FC0DD37FC9}</ProjectGuid>
-  </PropertyGroup>
+		<RootNamespace>ResonitePackageExporter</RootNamespace>
+		<ProjectGuid>{E5F0F18C-50AE-4491-AE4B-70FC0DD37FC9}</ProjectGuid>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <TargetFramework>net472</TargetFramework>
-    <LangVersion>preview</LangVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<AppDesignerFolder>Properties</AppDesignerFolder>
+		<TargetFramework>net472</TargetFramework>
+		<LangVersion>12.0</LangVersion>
+		<FileAlignment>512</FileAlignment>
+		<Deterministic>true</Deterministic>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <CopyLocal>false</CopyLocal>
-    <DoAutoPostX Condition="'$(DoAutoPostX)'==''">true</DoAutoPostX>
-    <CopyToLibraries Condition="'$(CopyToLibraries)'==''">true</CopyToLibraries>
-    <DebugSymbols Condition="'$(Configuration)'=='Release'">false</DebugSymbols>
-    <DebugType Condition="'$(Configuration)'=='Release'">pdbonly</DebugType>
-  </PropertyGroup>
+	<PropertyGroup>
+		<CopyLocal>false</CopyLocal>
+		<DoAutoPostX Condition="'$(DoAutoPostX)'==''">true</DoAutoPostX>
+		<CopyToLibraries Condition="'$(CopyToLibraries)'==''">true</CopyToLibraries>
+		<DebugSymbols Condition="'$(Configuration)'=='Release'">false</DebugSymbols>
+		<DebugType Condition="'$(Configuration)'=='Release'">pdbonly</DebugType>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="Properties\launchSettings.json" />
-    <None Include="..\README.md" Link="README.md" />
-  </ItemGroup>
-  
-  <PropertyGroup>
-    <AppPath>$(MSBuildThisFileDirectory)$(AppName)</AppPath>
-    <AppPath Condition="Exists('E:\Programs\Steam\steamapps\common\$(AppName)')">E:\Programs\Steam\steamapps\common\$(AppName)</AppPath>
-    <AppPath Condition="Exists('E:\SteamLibrary\steamapps\common\$(AppName)')">E:\SteamLibrary\steamapps\common\$(AppName)</AppPath>
-    <AppPath Condition="Exists('$(HOME)/.steam/steam/steamapps/common/$(AppName)')">$(HOME)/.steam/steam/steamapps/common/$(AppName)</AppPath>
-    <AppPath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\$(AppName)')">C:\Program Files (x86)\Steam\steamapps\common\$(AppName)</AppPath>
+	<ItemGroup>
+		<None Include="Properties\launchSettings.json" />
+		<None Include="..\README.md" Link="README.md" />
+	</ItemGroup>
+	
+	<PropertyGroup>
+		<AppPath>$(MSBuildThisFileDirectory)$(AppName)</AppPath>
+		<AppPath Condition="Exists('E:\Programs\Steam\steamapps\common\$(AppName)')">E:\Programs\Steam\steamapps\common\$(AppName)</AppPath>
+		<AppPath Condition="Exists('E:\SteamLibrary\steamapps\common\$(AppName)')">E:\SteamLibrary\steamapps\common\$(AppName)</AppPath>
+		<AppPath Condition="Exists('$(HOME)/.steam/steam/steamapps/common/$(AppName)')">$(HOME)/.steam/steam/steamapps/common/$(AppName)</AppPath>
+		<AppPath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\$(AppName)')">C:\Program Files (x86)\Steam\steamapps\common\$(AppName)</AppPath>
 
-	<!--Leaving the trailing \ out for the powershell script later-->
-    <AppData Condition="Exists('$(AppPath)\$(AppNameShort)_Data')">$(AppPath)\$(AppNameShort)_Data\Managed</AppData>
+		<!--Leaving the trailing \ out for the powershell script later-->
+		<AppData Condition="Exists('$(AppPath)\$(AppNameShort)_Data')">$(AppPath)\$(AppNameShort)_Data\Managed</AppData>
 
-    <AlternateDataPath>$(AppPath)\Alt</AlternateDataPath>
-    <AlternateDataPath Condition="Exists('$(AppPath)')">$(AppPath)\_altData</AlternateDataPath>
-  </PropertyGroup>
+		<AlternateDataPath>$(AppPath)\Alt</AlternateDataPath>
+		<AlternateDataPath Condition="Exists('$(AppPath)')">$(AppPath)\_altData</AlternateDataPath>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<!--Newtonsoft.Json.Bson wants 12+ of Newtonsoft.Json for some reason-->
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
 
+	<ItemGroup>
+		<Reference Include="HarmonyLib">
+			<HintPath>$(AppPath)\Libraries\0Harmony.dll</HintPath>
+		</Reference>
+		<Reference Include="FrooxEngine">
+			<HintPath>$(AppData)\FrooxEngine.dll</HintPath>
+		</Reference>
+		<Reference Include="BaseX">
+			<HintPath>$(AppData)\BaseX.dll</HintPath>
+		</Reference>
+		<Reference Include="CodeX">
+			<HintPath>$(AppData)\CodeX.dll</HintPath>
+		</Reference>
+		<Reference Include="CloudX.Shared">
+			<HintPath>$(AppData)\CloudX.Shared.dll</HintPath>
+		</Reference>
+		<Reference Include="LZMA">
+			<HintPath>$(AppData)\LZMA.dll</HintPath>
+		</Reference>
+		<Reference Include="System.Memory">
+			<HintPath>$(AppData)\System.Memory.dll</HintPath>
+		</Reference>
+		<Reference Include="System.Text.Json">
+			<HintPath>$(AppData)\System.Text.Json.dll</HintPath>
+		</Reference>
+		<Reference Include="Newtonsoft.Json.Bson">
+			<HintPath>$(AppData)\Newtonsoft.Json.Bson.dll</HintPath>
+		</Reference>
+		<Reference Include="System.IO.Compression">
+			<HintPath>$(AppData)\System.IO.Compression.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.Bcl.AsyncInterfaces">
+			<HintPath>$(AppData)\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+		</Reference>
+		<Reference Include="System.Threading.Tasks.Extensions">
+			<HintPath>$(AppData)\System.Threading.Tasks.Extensions.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="HarmonyLib">
-      <HintPath>$(AppPath)\Libraries\0Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="FrooxEngine">
-      <HintPath>$(AppData)\FrooxEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="BaseX">
-      <HintPath>$(AppData)\BaseX.dll</HintPath>
-    </Reference>
-    <Reference Include="CodeX">
-      <HintPath>$(AppData)\CodeX.dll</HintPath>
-    </Reference>
-    <Reference Include="CloudX.Shared">
-      <HintPath>$(AppData)\CloudX.Shared.dll</HintPath>
-    </Reference>
-    <Reference Include="LZMA">
-      <HintPath>$(AppData)\LZMA.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Memory">
-      <HintPath>$(AppData)\System.Memory.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Text.Json">
-      <HintPath>$(AppData)\System.Text.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>$(AppData)\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json.Bson">
-      <HintPath>$(AppData)\Newtonsoft.Json.Bson.dll</HintPath>
-    </Reference>
-	  <Reference Include="System.IO.Compression">
-		  <HintPath>$(AppData)\System.IO.Compression.dll</HintPath>
-	  </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces">
-      <HintPath>$(AppData)\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions">
-      <HintPath>$(AppData)\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToLibraries)'=='true'">
-	  <Exec Condition="'$(DoAutoPostX)'=='true'" Command='powershell -NoProfile -ExecutionPolicy Bypass -File ".\Scripts\PostBuild.ps1" "$(AppPath)" "$(Configuration)"' />
-	  <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(AppPath)\Libraries" />
-	  <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(AppPath)\Libraries" />
-	  <Message Text="Copied $(TargetFileName) to $(AppPath)\Libraries" Importance="high" />
-  </Target>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToLibraries)'=='true'">
+		<!-- Visual Studio auto converted from '""' to "&quot;&quot;" so I'm not going to fight it on that -->
+		<Exec Condition="'$(DoAutoPostX)'=='true'" Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;.\Scripts\PostBuild.ps1&quot; &quot;$(AppPath)&quot; &quot;$(Configuration)&quot;" />
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(AppPath)\Libraries" />
+		<Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(AppPath)\Libraries" />
+		<Message Text="Copied $(TargetFileName) to $(AppPath)\Libraries" Importance="high" />
+	</Target>
 </Project>

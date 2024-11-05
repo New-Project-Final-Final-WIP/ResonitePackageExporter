@@ -1,16 +1,15 @@
 ﻿using System;
-using FrooxEngine;
-
-
 using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+
+using FrooxEngine;
 using Record = CloudX.Shared.Record;
 
 namespace ResonitePackageExporter;
 
 // Implement PackageExportable component from Resonite
-[Category(new string[] { "Assets/Export" })]
+[Category(["Assets/Export"])]
 public class PackageExportable : Component, IExportable, IComponent, IComponentBase, IDestroyable, IWorker, IWorldElement, IUpdatable, IChangeable, IAudioUpdatable, IInitializable, ILinkable
 {
 

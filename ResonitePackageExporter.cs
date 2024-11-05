@@ -1,9 +1,9 @@
 ﻿using BaseX;
-using FrooxEngine;
 using HarmonyLib;
-using System.Collections.Generic;
+using FrooxEngine;
 using System.Linq;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace ResonitePackageExporter
 {
@@ -15,7 +15,7 @@ namespace ResonitePackageExporter
         {
             // Print initialization
             Logger.Log("Initializing ResonitePackageExplorer");
-            harmony = new("neos.ResonitePackageImporter");
+            harmony = new("Neos.ResonitePackageImporter");
             Logger.Log($"Using Harmony v{typeof(Harmony).Assembly.GetName()?.Version?.ToString()}");
 
             Logger.Log("Patching Methods");
@@ -62,12 +62,12 @@ namespace ResonitePackageExporter
                     // Always add a new package exportable if slot is root
                     if (!componentsInChildren.Any(e => e is PackageExportable) || target == target.World.RootSlot)
                     {
-                        List<IExportable> cleanup = new();
+                        List<IExportable> cleanup = [];
 
                         // If no IExportable components exist add a ModelExportable if not root
                         if (componentsInChildren.Count == 0 && target != target.World.RootSlot)
                         {
-                            ModelExportable modelExportable = target.AttachComponent<ModelExportable>(true, null);
+                            ModelExportable modelExportable = target.AttachComponent<ModelExportable>();
                             modelExportable.Persistent = false;
                             modelExportable.Root.Target = target;
                             cleanup.Add(modelExportable);
@@ -110,7 +110,7 @@ namespace ResonitePackageExporter
                 newlist.Add(exportable);
             }
 
-            exportables = newlist.ToArray();
+            exportables = [.. newlist];
         }
     }
 }

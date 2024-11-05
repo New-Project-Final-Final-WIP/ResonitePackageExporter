@@ -1,0 +1,10 @@
+﻿[*.cs]
+
+# IDE0051: Remove unused private members
+dotnet_diagnostic.IDE0051.severity = silent
+
+# IDE0060: Remove unused parameter
+dotnet_diagnostic.IDE0060.severity = silent
+
+# IDE0251: Make member 'readonly'
+dotnet_diagnostic.IDE0251.severity = silent

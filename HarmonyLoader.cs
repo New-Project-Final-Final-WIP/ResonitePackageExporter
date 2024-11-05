@@ -1,9 +1,5 @@
-﻿
-using BaseX;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace ResonitePackageExporter
@@ -12,12 +8,12 @@ namespace ResonitePackageExporter
     {
         internal static Assembly? LoadAssembly(string filepath)
         {
-            string filename = Path.GetFileName(filepath);
+            //string filename = Path.GetFileName(filepath);
 
             Assembly assembly;
             try
             {
-                Logger.Log($"load assembly {filename}");
+                //Logger.Log($"load assembly {filename}");
                 assembly = Assembly.LoadFrom(filepath);
             }
             catch (Exception e)
@@ -35,7 +31,7 @@ namespace ResonitePackageExporter
 
         internal static bool LoadHarmony()
         {
-            string[] paths_to_search = { "", "Libraries", "nml_libs" };
+            string[] paths_to_search = ["", "Libraries", "nml_libs"];
             string found_harmony = null;
 
             Logger.Log("Loading HarmonyLib");
@@ -43,10 +39,10 @@ namespace ResonitePackageExporter
             {
                 string directory = Path.Combine(PlatformHelper.MainDirectory, dirName);
                 string file = Path.Combine(directory, "0Harmony.dll");
-                Logger.Log(file);
+                //Logger.Log(file);
                 if (File.Exists(file))
                 {
-                    Logger.Log("Found HarmonyLib");
+                    Logger.Log($"Found HarmonyLib at {file}");
                     found_harmony = file;
                     break;
                 }

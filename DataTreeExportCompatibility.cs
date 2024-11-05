@@ -1,11 +1,9 @@
 ﻿using BaseX;
-using HarmonyLib;
+using SevenZip;
 using System.IO;
 using System.Text;
-using Newtonsoft.Json.Bson;
-using SevenZip;
 using System.Reflection;
-using System;
+using Newtonsoft.Json.Bson;
 
 namespace ResonitePackageExporter
 {
@@ -26,7 +24,7 @@ namespace ResonitePackageExporter
             using BsonDataWriter bsonDataWriter = new(memoryStream);
 
             bsonDataWriter.CloseOutput = false;
-            DataTreeWrite.Invoke(null, parameters: new object[] { root, bsonDataWriter });
+            DataTreeWrite.Invoke(null, parameters: [root, bsonDataWriter]);
             memoryStream.Seek(0L, SeekOrigin.Begin);
             Helper.Compress(memoryStream, stream);
             return false;

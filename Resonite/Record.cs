@@ -1,11 +1,9 @@
-﻿//using CloudX.Shared;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.Json.Serialization;
-using static FrooxEngine.MultiBoolConditionDriver;
 
 namespace ResonitePackageExporter.Resonite
 {
@@ -27,7 +25,7 @@ namespace ResonitePackageExporter.Resonite
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public RecordId CombinedRecordId => new RecordId(this.OwnerId, this.RecordId);
+        public RecordId CombinedRecordId => new(OwnerId, RecordId);
 
         [JsonProperty(PropertyName = "version")]
         [JsonPropertyName("version")]
@@ -121,46 +119,46 @@ namespace ResonitePackageExporter.Resonite
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public bool IsValidOwnerId => CloudX.Shared.IdUtil.GetOwnerType(this.OwnerId) != CloudX.Shared.OwnerType.INVALID;
+        public bool IsValidOwnerId => CloudX.Shared.IdUtil.GetOwnerType(OwnerId) != CloudX.Shared.OwnerType.INVALID;
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public bool IsValidRecordId => RecordHelper.IsValidRecordID(this.RecordId);
+        public bool IsValidRecordId => RecordHelper.IsValidRecordID(RecordId);
 
-        public void ResetVersioning() => this.Version = new RecordVersion();
+        public void ResetVersioning() => Version = new RecordVersion();
 
         public void OverrideGlobalVersion(int globalVersion)
         {
-            if (globalVersion < this.Version.GlobalVersion)
-                throw new InvalidOperationException(string.Format("GlobalVersion cannot be set to a lower value than it already is. Current: {0}, target: {1}", (object)this.Version.GlobalVersion, (object)globalVersion));
-            this.Version = this.Version with
+            if (globalVersion < Version.GlobalVersion)
+                throw new InvalidOperationException(string.Format("GlobalVersion cannot be set to a lower value than it already is. Current: {0}, target: {1}", (object)Version.GlobalVersion, (object)globalVersion));
+            Version = Version with
             {
                 GlobalVersion = globalVersion
             };
         }
 
-        public void IncrementGlobalVersion() => this.OverrideGlobalVersion(this.Version.GlobalVersion + 1);
+        public void IncrementGlobalVersion() => OverrideGlobalVersion(Version.GlobalVersion + 1);
 
         public void IncrementLocalVersion(string machineId, string userId)
         {
-            RecordVersion version = this.Version;
+            RecordVersion version = Version;
             ++version.LocalVersion;
             version.LastModifyingMachineId = machineId;
             version.LastModifyingUserId = userId;
-            this.Version = version;
+            Version = version;
         }
 
         public R Clone<R>() where R : class, IRecord, new() => System.Text.Json.JsonSerializer.Deserialize<R>(System.Text.Json.JsonSerializer.Serialize<Record>(this));
 
         public Record Clone()
         {
-            using (MemoryStream serializationStream = new MemoryStream())
-            {
-                BinaryFormatter binaryFormatter = new BinaryFormatter();
-                binaryFormatter.Serialize((Stream)serializationStream, (object)this);
-                serializationStream.Position = 0L;
-                return (Record)binaryFormatter.Deserialize((Stream)serializationStream);
-            }
+            using MemoryStream serializationStream = new();
+            BinaryFormatter binaryFormatter = new();
+
+            binaryFormatter.Serialize(serializationStream, this);
+            serializationStream.Position = 0L;
+
+            return (Record)binaryFormatter.Deserialize(serializationStream);
         }
 
         [Obsolete]
@@ -175,10 +173,10 @@ namespace ResonitePackageExporter.Resonite
             {
                 if (value == null)
                     return;
-                if (this.AssetManifest == null)
-                    this.AssetManifest = value;
+                if (AssetManifest == null)
+                    AssetManifest = value;
                 else
-                    this.AssetManifest.AddRange(value);
+                    AssetManifest.AddRange(value);
             }
         }
 
@@ -192,7 +190,7 @@ namespace ResonitePackageExporter.Resonite
             {
                 if (!value.HasValue)
                     return;
-                this.Version = this.Version with
+                Version = Version with
                 {
                     GlobalVersion = value.Value
                 };
@@ -209,7 +207,7 @@ namespace ResonitePackageExporter.Resonite
             {
                 if (!value.HasValue)
                     return;
-                this.Version = this.Version with
+                Version = Version with
                 {
                     LocalVersion = value.Value
                 };
@@ -222,7 +220,7 @@ namespace ResonitePackageExporter.Resonite
         [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string LegacyLastModifyingUserId
         {
-            set => this.Version = this.Version with
+            set => Version = Version with
             {
                 LastModifyingUserId = value
             };
@@ -234,16 +232,13 @@ namespace ResonitePackageExporter.Resonite
         [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string LegacyLastModifyingMachineId
         {
-            set => this.Version = this.Version with
+            set => Version = Version with
             {
                 LastModifyingMachineId = value
             };
         }
 
 
-        /// <summary>
-        /// /////////////////////////////////////////////////////////
-        /// </summary>
         [Obsolete]
         [JsonPropertyName("RecordId")]
         [System.Text.Json.Serialization.JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
@@ -251,6 +246,6 @@ namespace ResonitePackageExporter.Resonite
         {
             set => RecordId = value;
         }
-        public override string ToString() => string.Format("Record {0}:{1}, Name: {2}, Type: {3}, Path: {4}, Version: {5}, AssetURI: {6}, Deleted: {7}", (object)this.OwnerId, (object)this.RecordId, (object)this.Name, (object)this.RecordType, (object)this.Path, (object)this.Version, (object)this.AssetURI, (object)this.IsDeleted);
+        public override string ToString() => string.Format("Record {0}:{1}, Name: {2}, Type: {3}, Path: {4}, Version: {5}, AssetURI: {6}, Deleted: {7}", OwnerId, RecordId, Name, RecordType, Path, Version, AssetURI, IsDeleted);
     }
 }
