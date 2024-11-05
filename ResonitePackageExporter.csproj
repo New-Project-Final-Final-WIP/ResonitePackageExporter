@@ -1,148 +1,105 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <AppName>NeosVR</AppName>
+    <AppNameShort>Neos</AppNameShort>
+
+    <Product>ResonitePackageExporter</Product>
+    <Version>0.1.0</Version>
+
+    <Company>New_Project_Final_Final_WIP</Company>
+    <Copyright>Copyright © $(Company) 2024</Copyright>
+
+    <Authors>$(Company)</Authors>
+    <AssemblyTitle>$(Product)</AssemblyTitle>
+    <AssemblyName>$(Product)</AssemblyName>
+
+    <RootNamespace>ResonitePackageExporter</RootNamespace>
     <ProjectGuid>{E5F0F18C-50AE-4491-AE4B-70FC0DD37FC9}</ProjectGuid>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ResonitePackageExporter</RootNamespace>
-    <AssemblyName>ResonitePackageExporter</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-    <LangVersion>10</LangVersion>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>preview</LangVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <!-- If you don't want to provide a NeosPath in dotnet build, you can specify one here -->
-    <!-- <NeosPath Condition="'$(NeosPath)'==''"></NeosPath>  -->
   </PropertyGroup>
-  <PropertyGroup Condition="'$(NeosPath)'==''">
-    <!-- Windows steam -->
-    <NeosPath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\NeosVR\')">C:\Program Files (x86)\Steam\steamapps\common\NeosVR\</NeosPath>
-    <!-- Windows standalone -->
-    <NeosPath Condition="Exists('C:\Neos\app\')">C:\Neos\app\</NeosPath>
-    <!-- Linux steam -->
-    <NeosPath Condition="Exists('$(HOME)/.steam/steam/steamapps/common/NeosVR/')">$(HOME)/.steam/steam/steamapps/common/NeosVR/</NeosPath>
-    <!-- Funny Hee Hee -->
-    <NeosPath Condition="Exists('E:\SteamLibrary\steamapps\common\NeosVR')">E:\SteamLibrary\steamapps\common\NeosVR</NeosPath>
+
+  <PropertyGroup>
+    <CopyLocal>false</CopyLocal>
+    <DoAutoPostX Condition="'$(DoAutoPostX)'==''">true</DoAutoPostX>
+    <CopyToLibraries Condition="'$(CopyToLibraries)'==''">true</CopyToLibraries>
+    <DebugSymbols Condition="'$(Configuration)'=='Release'">false</DebugSymbols>
+    <DebugType Condition="'$(Configuration)'=='Release'">pdbonly</DebugType>
   </PropertyGroup>
-  <!-- Debug Build -->
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <ItemGroup>
+    <None Include="Properties\launchSettings.json" />
+    <None Include="..\README.md" Link="README.md" />
+  </ItemGroup>
+  
+  <PropertyGroup>
+    <AppPath>$(MSBuildThisFileDirectory)$(AppName)</AppPath>
+    <AppPath Condition="Exists('E:\Programs\Steam\steamapps\common\$(AppName)')">E:\Programs\Steam\steamapps\common\$(AppName)</AppPath>
+    <AppPath Condition="Exists('E:\SteamLibrary\steamapps\common\$(AppName)')">E:\SteamLibrary\steamapps\common\$(AppName)</AppPath>
+    <AppPath Condition="Exists('$(HOME)/.steam/steam/steamapps/common/$(AppName)')">$(HOME)/.steam/steam/steamapps/common/$(AppName)</AppPath>
+    <AppPath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\$(AppName)')">C:\Program Files (x86)\Steam\steamapps\common\$(AppName)</AppPath>
+
+	<!--Leaving the trailing \ out for the powershell script later-->
+    <AppData Condition="Exists('$(AppPath)\$(AppNameShort)_Data')">$(AppPath)\$(AppNameShort)_Data\Managed</AppData>
+
+    <AlternateDataPath>$(AppPath)\Alt</AlternateDataPath>
+    <AlternateDataPath Condition="Exists('$(AppPath)')">$(AppPath)\_altData</AlternateDataPath>
   </PropertyGroup>
-  <!-- Release Build -->
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <!-- Auto PostX Process Plugin -->
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AutoPostX|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\AutoPostX\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <!-- ../../ to escape out of bin/AutoPostX, $(ProjectDir) appears to be affected by the OutputPath -->
-    <PostBuildEvent>cd "../../$(ProjectDir)"
-      powershell -NoProfile -ExecutionPolicy Bypass -Command ./Scripts/PostBuild.ps1 '$(NeosPath)' $(ConfigurationName)
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- Release Build in without Unsafe Mode checks -->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseUnsafe|AnyCPU'">
-    <OutputPath>bin\ReleaseUnsafe\</OutputPath>
-    <DefineConstants>TRACE;UNSAFE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <!-- CopyLocal False -->
-  <ItemDefinitionGroup>
-    <Reference>
-      <Private>false</Private>
-    </Reference>
-  </ItemDefinitionGroup>
+
+
   <ItemGroup>
     <Reference Include="HarmonyLib">
-      <HintPath>$(NeosPath)\nml_libs\0Harmony.dll</HintPath>
+      <HintPath>$(AppPath)\Libraries\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
     <Reference Include="FrooxEngine">
-      <HintPath>$(NeosPath)\Neos_Data\Managed\FrooxEngine.dll</HintPath>
+      <HintPath>$(AppData)\FrooxEngine.dll</HintPath>
     </Reference>
     <Reference Include="BaseX">
-      <HintPath>$(NeosPath)\Neos_Data\Managed\BaseX.dll</HintPath>
+      <HintPath>$(AppData)\BaseX.dll</HintPath>
     </Reference>
     <Reference Include="CodeX">
-      <HintPath>$(NeosPath)\Neos_Data\Managed\CodeX.dll</HintPath>
+      <HintPath>$(AppData)\CodeX.dll</HintPath>
     </Reference>
     <Reference Include="CloudX.Shared">
-      <HintPath>$(NeosPath)\Neos_Data\Managed\CloudX.Shared.dll</HintPath>
+      <HintPath>$(AppData)\CloudX.Shared.dll</HintPath>
     </Reference>
     <Reference Include="LZMA">
-      <HintPath>$(NeosPath)\Neos_Data\Managed\LZMA.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json.Bson">
-      <HintPath>$(NeosPath)\Neos_Data\Managed\Newtonsoft.Json.Bson.dll</HintPath>
+      <HintPath>$(AppData)\LZMA.dll</HintPath>
     </Reference>
     <Reference Include="System.Memory">
-      <HintPath>$(NeosPath)\Neos_Data\Managed\System.Memory.dll</HintPath>
+      <HintPath>$(AppData)\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Text.Json">
-      <HintPath>$(NeosPath)\Neos_Data\Managed\System.Text.Json.dll</HintPath>
+      <HintPath>$(AppData)\System.Text.Json.dll</HintPath>
     </Reference>
-    <Reference Include="System.IO.Compression">
-      <HintPath>$(NeosPath)\Neos_Data\Managed\System.IO.Compression.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(AppData)\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="System.Threading.Tasks.Dataflow">
-      <HintPath>$(NeosPath)\Neos_Data\Managed\System.Threading.Tasks.Dataflow.dll</HintPath>
+    <Reference Include="Newtonsoft.Json.Bson">
+      <HintPath>$(AppData)\Newtonsoft.Json.Bson.dll</HintPath>
+    </Reference>
+	  <Reference Include="System.IO.Compression">
+		  <HintPath>$(AppData)\System.IO.Compression.dll</HintPath>
+	  </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces">
+      <HintPath>$(AppData)\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions">
-      <HintPath>$(NeosPath)\Neos_Data\Managed\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces">
-      <HintPath>$(NeosPath)\Neos_Data\Managed\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+      <HintPath>$(AppData)\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="DataTreeExportCompatibility.cs" />
-    <Compile Include="DebugPatches.cs" />
-    <Compile Include="HarmonyLoader.cs" />
-    <Compile Include="ExecutionHook.cs" />
-    <Compile Include="Logger.cs" />
-    <Compile Include="PackageCreator.cs" />
-    <Compile Include="PackageExportable.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RecordHelper.cs" />
-    <Compile Include="RecordPackage.cs" />
-    <Compile Include="ResoniteConvert\DBAsset.cs" />
-    <Compile Include="ResoniteConvert\IRecord.cs" />
-    <Compile Include="ResoniteConvert\MigrationMetadata.cs" />
-    <Compile Include="ResoniteConvert\Record.cs" />
-    <Compile Include="ResoniteConvert\RecordConverter.cs" />
-    <Compile Include="ResoniteConvert\RecordId.cs" />
-    <Compile Include="ResoniteConvert\RecordVersion.cs" />
-    <Compile Include="ResoniteConvert\Submission.cs" />
-    <Compile Include="ResonitePackageExporter.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToLibraries)'=='true'">
+	  <Exec Condition="'$(DoAutoPostX)'=='true'" Command='powershell -NoProfile -ExecutionPolicy Bypass -File ".\Scripts\PostBuild.ps1" "$(AppPath)" "$(Configuration)"' />
+	  <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(AppPath)\Libraries" />
+	  <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(AppPath)\Libraries" />
+	  <Message Text="Copied $(TargetFileName) to $(AppPath)\Libraries" Importance="high" />
+  </Target>
 </Project>

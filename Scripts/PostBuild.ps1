@@ -9,26 +9,13 @@ if ($PWD.Path.EndsWith("Scripts")) {
 }
 
 #Verify output location exists
-$OutputLocation = "$($ProjectPath)\bin\$($ConfigurationName)\"
+$OutputLocation = "$($ProjectPath)\bin\$($ConfigurationName)\net472\"
 if (-not (Test-Path "$OutputLocation")) {
     Write-Error "Output Location path '$OutputLocation' does not exist"
     Exit 2
 }
 
 Add-Type -Path "$($NeosPath)\Neos_Data\Managed\PostX.dll"
-
-#Copy Required dlls from Neos to OutputLocation 
-Copy-Item -Path "$($NeosPath)\nml_libs\0Harmony.dll" -Destination $OutputLocation -ErrorAction Continue
-Copy-Item -Path "$($NeosPath)\Neos_Data\Managed\FrooxEngine.dll" -Destination $OutputLocation -ErrorAction Continue
-Copy-Item -Path "$($NeosPath)\Neos_Data\Managed\BaseX.dll" -Destination $OutputLocation -ErrorAction Continue
-Copy-Item -Path "$($NeosPath)\Neos_Data\Managed\CodeX.dll" -Destination $OutputLocation -ErrorAction Continue
-Copy-Item -Path "$($NeosPath)\Neos_Data\Managed\CloudX.Shared.dll" -Destination $OutputLocation -ErrorAction Continue
-Copy-Item -Path "$($NeosPath)\Neos_Data\Managed\Newtonsoft.Json.dll" -Destination $OutputLocation -ErrorAction Continue
-Copy-Item -Path "$($NeosPath)\Neos_Data\Managed\System.Text.Json.dll" -Destination $OutputLocation -ErrorAction Continue
-Copy-Item -Path "$($NeosPath)\Neos_Data\Managed\System.IO.Compression.dll" -Destination $OutputLocation -ErrorAction Continue
-Copy-Item -Path "$($NeosPath)\Neos_Data\Managed\System.Threading.Tasks.Dataflow.dll" -Destination $OutputLocation -ErrorAction Continue
-Copy-Item -Path "$($NeosPath)\Neos_Data\Managed\System.Threading.Tasks.Extensions.dll" -Destination $OutputLocation -ErrorAction Continue
-
 
 #Run PostX Process
 [PostX.NeosAssemblyPostProcessor].GetMethod("Process").Invoke($null, @("$OutputLocation\ResonitePackageExporter.dll", "$OutputLocation"))

@@ -1,0 +1,29 @@
+{
+  "profiles": {
+
+    "Launch Plugin": {
+      "commandName": "Executable",
+      "executablePath": "$(AppPath)/$(AppNameShort).exe",
+      "commandLineArgs": "-Screen -Invisible -LoadAssembly \"Libraries/$(AssemblyName).dll\" -DontAutoOpenCloudHome -SkipIntroTutorial",
+      "workingDirectory": "$(AppPath)"
+    },
+    "Launch Plugin in VR": {
+      "commandName": "Executable",
+      "executablePath": "$(AppPath)/$(AppNameShort).exe",
+      "commandLineArgs": "-Invisible -LoadAssembly \"Libraries/$(AssemblyName).dll\" -DontAutoOpenCloudHome -SkipIntroTutorial",
+      "workingDirectory": "$(AppPath)"
+    },
+    "Launch Plugin Alt": {
+      "commandName": "Executable",
+      "executablePath": "$(AppPath)/$(AppNameShort).exe",
+      "commandLineArgs": "-Screen -Invisible -LoadAssembly \"Libraries/$(AssemblyName).dll\" -DontAutoOpenCloudHome -SkipIntroTutorial -Config Config.json -DataPath \"$(AlternateDataPath)\\Data\" -CachePath \"$(AlternateDataPath)\\Cache\"",
+      "workingDirectory": "$(AppPath)"
+    },
+    "Launch Plugin in VR Alt": {
+      "commandName": "Executable",
+      "executablePath": "$(AppPath)/$(AppNameShort).exe",
+      "commandLineArgs": "-Invisible -LoadAssembly \"Libraries/$(AssemblyName).dll\" -DontAutoOpenCloudHome -SkipIntroTutorial -Config Config.json -DataPath \"$(AlternateDataPath)\\Data\" -CachePath \"$(AlternateDataPath)\\Cache\"",
+      "workingDirectory": "$(AppPath)"
+    }
+  }
+}
