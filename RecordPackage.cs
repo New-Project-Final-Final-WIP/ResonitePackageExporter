@@ -91,8 +91,6 @@ namespace ResonitePackageExporter
 
             using Stream utf8Json = _archive.CreateEntry(record.RecordId + ".record", CompressionLevel.Optimal).Open();
             await JsonSerializer.SerializeAsync(utf8Json, Resonite.RecordConverter.NeosRecordToResonite(record));
-
-
         }
 
         public void WriteMetadata(IAssetMetadata metadata)
@@ -129,6 +127,11 @@ namespace ResonitePackageExporter
             JsonSerializer.Serialize(utf8JsonWriter, metadata, new()
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                // For some machines it seems JsonIgnore is not respected in some cases?
+                // Adding the following options to resolve these issues
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+                IgnoreReadOnlyFields = true,
+                IgnoreReadOnlyProperties = true,
             });
         }
 
