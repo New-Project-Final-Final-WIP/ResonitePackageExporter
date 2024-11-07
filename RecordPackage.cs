@@ -90,8 +90,7 @@ namespace ResonitePackageExporter
             _records.Add(record.RecordId, record);
 
             using Stream utf8Json = _archive.CreateEntry(record.RecordId + ".record", CompressionLevel.Optimal).Open();
-            // NeosDB Record does currently work fine, however just to be safe if Resonite drops neos record support at some point I'll pre convert to a resonite record here
-            await JsonSerializer.SerializeAsync(utf8Json, Resonite.RecordConverter.NeosRecordToResonite(record));
+            await JsonSerializer.SerializeAsync(utf8Json, record);
         }
 
         public void WriteMetadata(IAssetMetadata metadata)
