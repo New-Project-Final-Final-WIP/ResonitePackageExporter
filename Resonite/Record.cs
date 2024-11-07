@@ -1,15 +1,13 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.Json.Serialization;
 
 namespace ResonitePackageExporter.Resonite
 {
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     [Serializable]
-    public class Record : IRecord
+    public class Record
     {
         [JsonProperty(PropertyName = "id")]
         [JsonPropertyName("id")]
@@ -22,10 +20,6 @@ namespace ResonitePackageExporter.Resonite
         [JsonProperty(PropertyName = "assetUri")]
         [JsonPropertyName("assetUri")]
         public string AssetURI { get; set; }
-
-        [System.Text.Json.Serialization.JsonIgnore]
-        [Newtonsoft.Json.JsonIgnore]
-        public RecordId CombinedRecordId => new(OwnerId, RecordId);
 
         [JsonProperty(PropertyName = "version")]
         [JsonPropertyName("version")]
@@ -99,67 +93,10 @@ namespace ResonitePackageExporter.Resonite
         [JsonPropertyName("randomOrder")]
         public int RandomOrder { get; set; }
 
-        [JsonProperty(PropertyName = "submissions")]
-        [JsonPropertyName("submissions")]
-        public List<Submission> Submissions { get; set; }
-
-        [System.Text.Json.Serialization.JsonIgnore]
-        [Newtonsoft.Json.JsonIgnore]
-        public List<string> Manifest { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "assetManifest")]
         [JsonPropertyName("assetManifest")]
         public List<DBAsset> AssetManifest { get; set; }
-
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "migrationMetadata")]
-        [JsonPropertyName("migrationMetadata")]
-        public MigrationMetadata MigrationMetadata { get; set; }
-
-        public static bool IsValidId(string recordId) => recordId.StartsWith("R-");
-
-        [System.Text.Json.Serialization.JsonIgnore]
-        [Newtonsoft.Json.JsonIgnore]
-        public bool IsValidOwnerId => CloudX.Shared.IdUtil.GetOwnerType(OwnerId) != CloudX.Shared.OwnerType.INVALID;
-
-        [System.Text.Json.Serialization.JsonIgnore]
-        [Newtonsoft.Json.JsonIgnore]
-        public bool IsValidRecordId => RecordHelper.IsValidRecordID(RecordId);
-
-        public void ResetVersioning() => Version = new RecordVersion();
-
-        public void OverrideGlobalVersion(int globalVersion)
-        {
-            if (globalVersion < Version.GlobalVersion)
-                throw new InvalidOperationException(string.Format("GlobalVersion cannot be set to a lower value than it already is. Current: {0}, target: {1}", (object)Version.GlobalVersion, (object)globalVersion));
-            Version = Version with
-            {
-                GlobalVersion = globalVersion
-            };
-        }
-
-        public void IncrementGlobalVersion() => OverrideGlobalVersion(Version.GlobalVersion + 1);
-
-        public void IncrementLocalVersion(string machineId, string userId)
-        {
-            RecordVersion version = Version;
-            ++version.LocalVersion;
-            version.LastModifyingMachineId = machineId;
-            version.LastModifyingUserId = userId;
-            Version = version;
-        }
-
-        public R Clone<R>() where R : class, IRecord, new() => System.Text.Json.JsonSerializer.Deserialize<R>(System.Text.Json.JsonSerializer.Serialize<Record>(this));
-
-        public Record Clone()
-        {
-            using MemoryStream serializationStream = new();
-            BinaryFormatter binaryFormatter = new();
-
-            binaryFormatter.Serialize(serializationStream, this);
-            serializationStream.Position = 0L;
-
-            return (Record)binaryFormatter.Deserialize(serializationStream);
-        }
 
         [Obsolete]
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "NeosDBManifest")]

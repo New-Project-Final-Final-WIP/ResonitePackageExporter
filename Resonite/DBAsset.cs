@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using System.Text.Json.Serialization;
-using System;
 
 namespace ResonitePackageExporter.Resonite
 {
