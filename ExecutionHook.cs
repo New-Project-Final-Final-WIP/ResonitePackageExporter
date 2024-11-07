@@ -24,11 +24,6 @@ namespace ResonitePackageExporter
                 }
 
                 ResonitePackageExporter.Initialize();
-
-                /*Engine.Current.OnReady += () =>
-                {
-                    ResonitePackageExporter.OnEngineReady();
-                };*/
             }
             catch (Exception e)
             {

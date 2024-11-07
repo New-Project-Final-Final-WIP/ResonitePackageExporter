@@ -34,6 +34,7 @@ namespace ResonitePackageExporter
 
         /*[HarmonyPrefix]
         [HarmonyPatch(typeof(FileBrowser), "CreateNew")]*/
+        // This is to inject the PackageExportable component before CreateNew method copies Exportables to the Export Dialog
         public static void InjectPackageExportable(FileBrowser __instance, IButton button, ButtonEventData eventData)
         {
 

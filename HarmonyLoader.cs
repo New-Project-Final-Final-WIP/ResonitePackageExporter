@@ -8,12 +8,10 @@ namespace ResonitePackageExporter
     {
         internal static Assembly? LoadAssembly(string filepath)
         {
-            //string filename = Path.GetFileName(filepath);
 
             Assembly assembly;
             try
             {
-                //Logger.Log($"load assembly {filename}");
                 assembly = Assembly.LoadFrom(filepath);
             }
             catch (Exception e)
@@ -39,7 +37,6 @@ namespace ResonitePackageExporter
             {
                 string directory = Path.Combine(PlatformHelper.MainDirectory, dirName);
                 string file = Path.Combine(directory, "0Harmony.dll");
-                //Logger.Log(file);
                 if (File.Exists(file))
                 {
                     Logger.Log($"Found HarmonyLib at {file}");
