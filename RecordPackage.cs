@@ -125,15 +125,7 @@ namespace ResonitePackageExporter
             using Stream utf8Json = _archive.CreateEntry("Metadata/" + metadata.AssetIdentifier + "." + extension, CompressionLevel.Optimal).Open();
             using Utf8JsonWriter utf8JsonWriter = new(utf8Json, default);
 
-            JsonSerializer.Serialize(utf8JsonWriter, metadata, new()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                // For some machines it seems JsonIgnore is not respected in some cases?
-                // Adding the following options to resolve these issues
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
-                IgnoreReadOnlyFields = true,
-                IgnoreReadOnlyProperties = true,
-            });
+            JsonSerializer.Serialize(utf8JsonWriter, metadata);
         }
 
         public void WriteAsset(string signature, string file)
