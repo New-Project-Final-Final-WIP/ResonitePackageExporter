@@ -14,10 +14,20 @@ namespace ResonitePackageExporter
     {
         public static async Task BuildPackage(Engine engine, CloudX.Shared.Record record, SavedGraph savedGraph, System.IO.Stream writeStream, bool includeVariants)
         {
+            Logger.Log("Building Package");
             RecordPackage package = RecordPackage.Create(writeStream);
             record.NeosDBManifest = [];
+
+            if (savedGraph.Root.TryGetNode("Slots") != null)
+                Logger.Warning("This is exporting as a world instead of an object!\nThis is currently unsupported on Resonite and may not import");
+            
+            if (CloudXInterface.UseNewtonsoftJson ^ ResonitePackageExporter.ToggleNewtonsoft)
+                Logger.Warning("Using NewtonsoftJson to export metadata");
+
             await CollectAssets(engine, record, savedGraph, package, includeVariants).ConfigureAwait(false);
 
+
+            Logger.Log("Saving DataTree");
             /// THIS MIGHT NEED TO BE ADDRESSED
             string tempFilePath = engine.LocalDB.GetTempFilePath(".lz4bson"); //".brson"
             DataTreeExportCompatibility.Save(savedGraph.Root, tempFilePath);
@@ -27,6 +37,7 @@ namespace ResonitePackageExporter
             string hashSignature = AssetUtil.GenerateHashSignature(tempFilePath);
             Uri assetUrl = RecordPackage.GetAssetURL(hashSignature);
 
+            Logger.Log("Writing R-Main record");
             package.WriteAsset(hashSignature, tempFilePath);
             
             record.RecordId = "R-Main";
@@ -34,10 +45,12 @@ namespace ResonitePackageExporter
             
             await package.WriteRecord(record);
             package.Dispose();
+            Logger.Log("Finished package!");
         }
 
         private static async Task CollectAssets(Engine engine, CloudX.Shared.Record record, SavedGraph savedGraph, RecordPackage package, bool includeVariants)
         {
+            Logger.Log("Collecting assets");
             foreach (DataTreeValue urlNode1 in savedGraph.URLNodes)
             {
                 DataTreeValue urlNode = urlNode1;

@@ -3,10 +3,8 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using FrooxEngine;
-using Record = CloudX.Shared.Record;
-
-namespace ResonitePackageExporter;
+// Use FrooxEngine namespace so the component stays if included in an export
+namespace FrooxEngine;
 
 // Implement PackageExportable component from Resonite
 [Category(["Assets/Export"])]
@@ -44,7 +42,7 @@ public class PackageExportable : Component, IExportable, IComponent, IComponentB
             int staticProviders = WorldOptimizer.DeduplicateStaticProviders(World);
             int assets = WorldOptimizer.CleanupAssets(World, true, WorldOptimizer.CleanupMode.MarkNonpersistent);
             
-            Logger.Log(string.Format("World Optimized! Deduplicated Materials: {0}, Deduplicated Static Providers: {1}, Cleaned Up Assets: {2}", mats, staticProviders, assets));
+            ResonitePackageExporter.Logger.Log(string.Format("World Optimized! Deduplicated Materials: {0}, Deduplicated Static Providers: {1}, Cleaned Up Assets: {2}", mats, staticProviders, assets));
             
             // Save the world
             savedGraph = World.SaveWorld();
@@ -55,12 +53,12 @@ public class PackageExportable : Component, IExportable, IComponent, IComponentB
         }
 
         // Create record and build the package
-        Record record = RecordHelper.CreateForObject<Record>(packageExportable.ExportName, packageExportable.LocalUser.UserID ?? packageExportable.LocalUser.MachineID, null);
+        var record = ResonitePackageExporter.RecordHelper.CreateForObject<CloudX.Shared.Record>(packageExportable.ExportName, packageExportable.LocalUser.UserID ?? packageExportable.LocalUser.MachineID, null);
         await new ToBackground();
 
         using FileStream fstream = File.OpenWrite(Path.Combine(folder, Path.ChangeExtension(name, ".resonitepackage")));
 
-        await PackageCreator.BuildPackage(packageExportable.Engine, record, savedGraph, fstream, includeVariants);
+        await ResonitePackageExporter.PackageCreator.BuildPackage(packageExportable.Engine, record, savedGraph, fstream, includeVariants);
         return true;
     }
 
@@ -70,10 +68,11 @@ public class PackageExportable : Component, IExportable, IComponent, IComponentB
             return "Resonite Package";
         if (index == 1)
             return "Resonite Package + Variants";
+        // Currently broken on resonite side
         if (index == 2)
-            return "World Resonite Package";
+            return "<i><alpha=#88><color=#888888>World Resonite Package\n<color=#d89>World Import is currently non functional</closeall>";
         if (index == 3)
-            return "World Resonite Package + Variants";
+            return "<i><alpha=#88><color=#888888>World Resonite Package + Variants\n<color=#d89>World Import is currently non functional</closeall>";
         throw new ArgumentOutOfRangeException(nameof(index));
     }
 

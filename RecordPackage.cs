@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Stream = System.IO.Stream;
 using Record = CloudX.Shared.Record;
+using CloudX.Shared;
+using System.Text;
 
 namespace ResonitePackageExporter
 {
@@ -91,7 +93,7 @@ namespace ResonitePackageExporter
 
             using Stream utf8Json = _archive.CreateEntry(record.RecordId + ".record", CompressionLevel.Optimal).Open();
             // NeosDB Record does currently work fine, however just to be safe if Resonite drops neos record support at some point I'll pre convert to a resonite record here
-            await JsonSerializer.SerializeAsync(utf8Json, Resonite.RecordConverter.NeosRecordToResonite(record));
+            await System.Text.Json.JsonSerializer.SerializeAsync(utf8Json, Resonite.RecordConverter.NeosRecordToResonite(record));
         }
 
         public void WriteMetadata(IAssetMetadata metadata)
@@ -122,10 +124,33 @@ namespace ResonitePackageExporter
 
         private void WriteMetadata<M>(M metadata, string extension) where M : IAssetMetadata
         {
-            using Stream utf8Json = _archive.CreateEntry("Metadata/" + metadata.AssetIdentifier + "." + extension, CompressionLevel.Optimal).Open();
-            using Utf8JsonWriter utf8JsonWriter = new(utf8Json, default);
+            try
+            {
+                using Stream utf8Json = _archive.CreateEntry("Metadata/" + metadata.AssetIdentifier + "." + extension, CompressionLevel.Optimal).Open();
 
-            JsonSerializer.Serialize(utf8JsonWriter, metadata);
+                //JsonSerializer.Serialize(utf8JsonWriter, metadata);
+                // CloudXInterface.UseNewtonsoftJson Effectively is Ahead-of-time compilation
+                if (CloudXInterface.UseNewtonsoftJson ^ ResonitePackageExporter.ToggleNewtonsoft)
+                {
+                    using StreamWriter streamWriter = new(utf8Json, Encoding.UTF8);
+                    streamWriter.Write(Newtonsoft.Json.JsonConvert.SerializeObject(metadata));
+                }
+                else
+                {
+                    using Utf8JsonWriter utf8JsonWriter = new(utf8Json, default);
+                    System.Text.Json.JsonSerializer.Serialize(utf8JsonWriter, metadata, metadata.GetType(), null);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(string.Format("Exception serializing metadata {0}: {1}\n  Maybe try toggling Newtonsoft via the dev create new dialog?\n{2}",
+                [
+                    metadata.GetType(),
+                    metadata.AssetIdentifier,
+                    ex
+                ]));
+                throw;
+            }
         }
 
         public void WriteAsset(string signature, string file)
