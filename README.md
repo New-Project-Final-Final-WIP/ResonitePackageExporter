@@ -3,6 +3,7 @@ A Plugin for [Neos VR](https://neos.com/) that adds a ResonitePackage export opt
 
 This only allows exporting to Resonite, there is no conversion back into Neos
 
+You can import Worlds into Resonite using the [ImportWorldResonitePackage mod](https://github.com/badhaloninja/ImportWorldResonitePackage)
 
 ## This is experimental, there is a chance for data loss when importing to resonite
 The project is a little bit of a mess at the moment
