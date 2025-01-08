@@ -21,8 +21,7 @@ namespace ResonitePackageExporter
             if (savedGraph.Root.TryGetNode("Slots") != null)
                 Logger.Warning("This is exporting as a world instead of an object!\nThis is currently unsupported on Resonite and may not import");
             
-            if (CloudXInterface.UseNewtonsoftJson ^ ResonitePackageExporter.ToggleNewtonsoft)
-                Logger.Warning("Using NewtonsoftJson to export metadata");
+            Logger.Warning($"Using {(ResonitePackageExporter.UseNewtonsoftJson ? "NewtonsoftJson" : "System.Text.Json")} to export metadata");
 
             await CollectAssets(engine, record, savedGraph, package, includeVariants).ConfigureAwait(false);
 

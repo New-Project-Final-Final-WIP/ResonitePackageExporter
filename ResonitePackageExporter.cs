@@ -12,8 +12,8 @@ namespace ResonitePackageExporter
     {
         public static Harmony harmony;
 
-        internal static string version = "0.1.5";
-        public static bool ToggleNewtonsoft = false;
+        internal static string version = "0.1.6";
+        public static bool UseNewtonsoftJson = true;
         public static void Initialize()
         {
             // Print initialization
@@ -39,7 +39,10 @@ namespace ResonitePackageExporter
 
             Engine.Current.RunPostInit(()=>
             {
-                Logger.Log($"CloudXInterface UseNewtonsoftJson: {CloudXInterface.UseNewtonsoftJson}");
+                Logger.Log($"ResonitePackageExporter UseNewtonsoftJson: {UseNewtonsoftJson}");
+
+                // CloudXInterface.UseNewtonsoftJson Effectively is Ahead-of-time compilation
+                Logger.Log($"INFO: CloudXInterface UseNewtonsoftJson: {CloudXInterface.UseNewtonsoftJson}");
                 AddCreateNewActions();
             });
         }
@@ -47,14 +50,17 @@ namespace ResonitePackageExporter
         static void AddCreateNewActions()
         {
             // Add option to switch to using newton soft or system.text.json
-            DevCreateNewForm.AddAction("ResonitePackage Tools", "Toggle NewtonsoftJson", s =>
+            DevCreateNewForm.AddAction("ResonitePackage Tools", "Switch Serialize Method", s =>
             {
-                ToggleNewtonsoft = !ToggleNewtonsoft;
-                Logger.Log($"Switched to using: {(CloudXInterface.UseNewtonsoftJson ^ ToggleNewtonsoft ? "NewtonsoftJson": "System.Text.Json")}");
+                UseNewtonsoftJson = !UseNewtonsoftJson;
+
+                string msg = $"Switched to using: {(UseNewtonsoftJson ? "NewtonsoftJson" : "System.Text.Json")}";
+
+                Logger.Log(msg);
 
                 DevCreateNewForm.SpawnText(s);
                 var text = s.GetComponent<TextRenderer>();
-                text.Text.Value = $"Use NewtonsoftJson: {CloudXInterface.UseNewtonsoftJson ^ ToggleNewtonsoft}";
+                text.Text.Value = msg;
 
             });
             // Directly export from the create new menu

@@ -130,7 +130,7 @@ namespace ResonitePackageExporter
 
                 //JsonSerializer.Serialize(utf8JsonWriter, metadata);
                 // CloudXInterface.UseNewtonsoftJson Effectively is Ahead-of-time compilation
-                if (CloudXInterface.UseNewtonsoftJson ^ ResonitePackageExporter.ToggleNewtonsoft)
+                if (ResonitePackageExporter.UseNewtonsoftJson)
                 {
                     using StreamWriter streamWriter = new(utf8Json, Encoding.UTF8);
                     streamWriter.Write(Newtonsoft.Json.JsonConvert.SerializeObject(metadata));

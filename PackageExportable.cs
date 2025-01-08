@@ -70,9 +70,9 @@ public class PackageExportable : Component, IExportable, IComponent, IComponentB
             return "Resonite Package + Variants";
         // Currently broken on resonite side
         if (index == 2)
-            return "<i><alpha=#88><color=#888888>World Resonite Package\n<color=#d89>World Import is currently non functional</closeall>";
+            return "World Resonite Package\n<i><alpha=#88><color=#d89>World Import is not officially supported</closeall>";
         if (index == 3)
-            return "<i><alpha=#88><color=#888888>World Resonite Package + Variants\n<color=#d89>World Import is currently non functional</closeall>";
+            return "World Resonite Package + Variants\n<i><alpha=#88><color=#d89>World Import is not officially supported</closeall>";
         throw new ArgumentOutOfRangeException(nameof(index));
     }
 
