@@ -18,6 +18,6 @@ The PostX script was taken from [XDelta's NeosFileStreamWriter project](https://
 
 
 ## Usage
-- When exporting an object/slot through the files tab, a new export option for `ResonitePackage` should be added to the top of the export dialogue, you can choose to export with or without variants included
-- You can export a world by doing the same as above but holding a slot reference to the Root slot instead, then selecting `World Resonite Package`
+- When exporting an object/slot through the files tab, a new export option for `ResonitePackage` should be added to the top of the export dialog, you can choose to export with or without variants included
+- You can export a world by doing the same as above but holding a slot reference to the Root slot instead, then selecting `World Resonite Package`, or you can use the the option in the DevCreateNew menu
 - This plugin adds a `PackageExportable` component which can be used as any other `Exportable` component if you want
